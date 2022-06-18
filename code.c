@@ -3,143 +3,175 @@
 typedef struct ArrayADT
 {
     int capacity,lastindex;
-    int *A;
-} Arr;
+    int *ptr;
+}arrADT;
 
-Arr* createArray(int cap)
+arrADT* createArray(int cap)
 {
-    Arr *ptr;
-    ptr=(Arr*)malloc(cap * sizeof(Arr));
-    ptr->capacity=cap;
-    ptr->lastindex=-1;
-    ptr->A=(int*)malloc(cap*sizeof(int));
+    arrADT *p;
+    p=(arrADT*)malloc(sizeof(arrADT));
+    p->capacity=cap;
+    p->lastindex=-1;
+    p->ptr=(int*)malloc(cap*sizeof(int));
     for(int i=0;i<cap;i++)
     {
-        ptr->A[i]=-1;
+        p->ptr[i]=-1;
     }
-    return(ptr);
+    return p;
 }
-int isFull(Arr* ptr)
+
+void append(arrADT* p,int data)
 {
-    if(ptr->lastindex==ptr->capacity-1)
+    if(p->lastindex==p->capacity-1)
     {
-        return 1;
+        printf("\n⚠️Overflow⚠️\n");
     }
     else
     {
-        return 0;
+        p->lastindex++;
+        p->ptr[p->lastindex]=data;
     }
-}
-int isEmpty(Arr* ptr)
-{
-    if(ptr->lastindex==-1)
-    {
-        return 1;
-    }
-    else
-        return 0;
+    printf("%d\n",p->lastindex);
 }
 
-void append(Arr* ptr, int value)
+void insert(arrADT* p,int index,int data)
 {
-    if(!isFull(ptr))
+    if(index<0||index>p->lastindex+1)
     {
-        ptr->lastindex++;
-        ptr->A[ptr->lastindex]=value;
+        printf("\n⚠️Invalid index⚠️\n");
+    }
+    else if(p->lastindex==p->capacity-1)
+    {
+        printf("\n⚠️Overflow⚠️\n");
     }
     else
     {
-        int flag=0;
-        for(int i=ptr->capacity-1;i>0;--i)
+        for(int i=p->lastindex;i>=index;--i)
         {
-            if(ptr->A[i]==-1)
-            {
-                ptr->A[i]=value;
-                flag=1;
-                break;
-            }
+            p->ptr[i+1]=p->ptr[i];
         }
-        if(flag==0)
-        {
-            printf("\n⚠️ARRAY IS FULL CANNOT APPEND⚠️\n");
-        }
-    }
-}
-void delete(Arr* ptr,int index)
-{
-        for(int i=index+1;i<ptr->capacity;i++)
-        {
-            ptr->A[i-1]=ptr->A[i];
-        }
-        ptr->A[ptr->capacity-1]=-1;
-    
-}
-void insertatIndex(Arr* ptr,int index,int data)
-{
-    
-    if(ptr->A[index]==-1)
-    {
-        ptr->A[index]=data;
-        ptr->lastindex=index;
-    }
-    else{
-    for(int i=ptr->capacity-1;i>index;--i)
-    {
-        ptr->A[i]=ptr->A[i-1];
-    }
-    ptr->A[index]=data;
+        p->ptr[index]=data;
+        p->lastindex++;
+        printf("\n%d\n",p->lastindex);
     }
 }
 
-void showArray(Arr *ptr)
+void delete(arrADT* p,int index)
 {
-    printf("This is your array\n");
-    for(int i=0;i<ptr->capacity;i++)
-        printf("| %d ",ptr->A[i]);
-    printf("|");
-    printf("\n");
+    if(p->lastindex==-1)
+    {
+        printf("\n⚠️Under flow cannot delete⚠️\n");
+    }
+    else
+    {
+        for(int i=index+1;i<p->capacity;i++)
+        {
+            p->ptr[i-1]=p->ptr[i];
+        }
+        p->lastindex--;
+        p->ptr[p->capacity-1]=-1;
+        printf("\n%d\n",p->lastindex);
+    }
+
 }
 
+void display(arrADT* p)
+{
+
+        printf("\nThis is your array\n");
+        for(int i=0;i<p->capacity;i++)
+            printf("| %d ",p->ptr[i]);
+        printf("|");
+        printf("\n");
+}
+
+int getdata(arrADT* p, int index)
+{
+    if(index>p->lastindex)
+    {
+        printf("\n⚠️Invalid Index⚠️");
+        return -1;
+    }
+    else
+        return (p->ptr[index]);
+}
+
+int count(arrADT* p)
+{
+    return (p->lastindex+1);
+}
+
+void edit(arrADT* p, int index, int newvalue)
+{
+    if(index>p->lastindex)
+    {
+        printf("\n⚠️Invalid Index⚠️");\
+    }
+    else
+    {
+        p->ptr[index]=newvalue;
+    }
+}
 
 int main()
 {
     int value,ch,flag=1,size;
-    Arr *Array1;
+    arrADT *Array1;
     printf("Enter the size of array you want to create\n");
     scanf("%d",&size);
     Array1=createArray(size);
     while(flag==1)
     {
-        int index=0;
-        printf("Enter your choice:\n");
-        printf("\n1. Append element\n2. Delete a particular element\n3. Display Array\n4. Insert data in between \n5. Exit\n");
+        int index=0,ans=0;
+        printf("\nEnter your choice:\n");
+        printf("\n1. Append element\n2. Delete\n3. Display Array\n4. Insert data\n5. Get data\n6. Count\n7. Edit\n8. Exit\n");
         scanf("%d",&ch);
         switch(ch)
         {
             case 1:
                 printf("\nYOU ARE GOING TO APPEND A NEW ELEMENT\n");
-                printf("Enter new number: ");
+                printf("Enter the data: ");
                 scanf("%d",&value);
                 append(Array1,value);
                 break;
             case 2:
                 printf("\nYOU ARE GOING TO DELETE AN ELEMENT\n");
-                printf("Enter new index: ");
+                printf("Enter the index: ");
                 scanf("%d",&index);
                 delete(Array1,index);
                 break;
             case 3:
-                showArray(Array1);
+                display(Array1);
                 break;
             case 4:
-                printf("\nYOU ARE GOING TO INSER AN ELEMENT AT PARICULAR INDEX\n");
+                printf("\nYOU ARE GOING TO INSET AN ELEMENT AT PARICULAR INDEX\n");
                 printf("Enter the index: ");
                 scanf("%d",&index);
                 printf("\nEnter the value to insert: ");
                 scanf("%d",&value);
-                insertatIndex(Array1, index, value);
+                insert(Array1, index, value);
                 break;
             case 5:
+                printf("\nYOU ARE GOING TO FETCH AN ELEMENT AT PARICULAR INDEX\n");
+                printf("Enter the index: ");
+                scanf("%d",&index);
+                ans=getdata(Array1, index);
+                printf("\nData: %d",ans);
+                break;
+            case 6:
+                printf("\nYOU ARE GOING TO SEE COUNT OF ELEMENTS\n");
+                ans=count(Array1);
+                printf("\nCount: %d",ans);
+                break;
+            case 7:
+                printf("\nYOU ARE GOING TO EDIT ARRAY\n");
+                printf("Enter the index: ");
+                scanf("%d",&index);
+                printf("\nEnter the new value to insert: ");
+                scanf("%d",&value);
+                edit(Array1, index, value);
+                break;
+            case 8:
                 flag=0;
                 break;
         }
