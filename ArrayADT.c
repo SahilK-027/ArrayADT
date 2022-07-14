@@ -56,7 +56,7 @@ void insert(arrADT* p,int index,int data)
     }
 }
 
-void delete(arrADT* p,int index)
+void deletion(arrADT* p,int index)
 {
     if(p->lastindex==-1)
     {
@@ -138,7 +138,7 @@ int main()
                 printf("\nYOU ARE GOING TO DELETE AN ELEMENT\n");
                 printf("Enter the index: ");
                 scanf("%d",&index);
-                delete(Array1,index);
+                deletion(Array1,index);
                 break;
             case 3:
                 display(Array1);
